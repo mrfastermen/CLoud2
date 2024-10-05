@@ -17,9 +17,13 @@ data "aws_ami" "ubuntu" {
 resource "aws_instance" "cloud2-instance" {
   ami           = data.aws_ami.ubuntu.id
   instance_type = "t3.micro"
+  #key_name      = "key-pair"
   key_name      = aws_key_pair.deployer.key_name
 
   subnet_id = aws_subnet.public1.id # Asociar la instancia a la subred
+
+  # Asignar el script de inicio (user_data)
+  user_data = file("user_data.sh")
 
   # Seguridad de la instancia (acceso solo por SSH - puerto 22)
   vpc_security_group_ids = [aws_security_group.instance_sg.id]
@@ -36,6 +40,9 @@ resource "aws_instance" "cloud2-instance2" {
   key_name      = aws_key_pair.deployer.key_name
 
   subnet_id = aws_subnet.public2.id # Asociar la instancia a la subred
+
+  # Asignar el script de inicio (user_data)
+  user_data = file("user_data.sh")
 
   # Seguridad de la instancia (acceso solo por SSH - puerto 22)
   vpc_security_group_ids = [aws_security_group.instance_sg.id]
